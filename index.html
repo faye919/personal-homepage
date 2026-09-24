@@ -14,14 +14,14 @@
   <div id="trailLayer" class="trail-layer" aria-hidden="true"></div>
 
   <header class="site-header">
-    <a class="logo" href="#home" aria-label="返回首页"><span>LYF</span><i>弁当</i></a>
+    <a class="logo" href="#home" aria-label="返回首页"><span>LYF</span></a>
     <nav aria-label="主导航">
       <a href="#home">首页</a>
       <a href="#about">便当格</a>
       <a href="#chat">分身</a>
       <a href="#feedback">反馈</a>
     </nav>
-    <span class="header-stamp">V2.1 / 2026</span>
+    <span class="header-stamp">V4.0 / 2026</span>
   </header>
 
   <main id="home" class="page-shell">
@@ -107,7 +107,15 @@
         <article class="bento-cell hometown-cell">
           <span class="big-type">天津</span>
           <p>FROM TIANJIN<br>NOW EXPLORING SHENZHEN</p>
-          <span class="route-line" aria-hidden="true"></span>
+          <span class="ferris-wheel" aria-hidden="true">
+            <svg viewBox="0 0 120 120" focusable="false">
+              <circle class="wheel-rim" cx="60" cy="49" r="36"></circle>
+              <circle class="wheel-hub" cx="60" cy="49" r="4"></circle>
+              <path class="wheel-spokes" d="M60 13v72M24 49h72M35 24l50 50M85 24L35 74"></path>
+              <path class="wheel-stand" d="M60 53L38 108M60 53l22 55M28 108h64"></path>
+              <path class="wheel-cabins" d="M55 7h10v8H55zM91 44h10v10H91zM55 83h10v10H55zM19 44h10v10H19zM81 18h9v9h-9zM81 71h9v9h-9zM30 18h9v9h-9zM30 71h9v9h-9z"></path>
+            </svg>
+          </span>
         </article>
 
         <article class="bento-cell hobby-cell">
@@ -185,7 +193,7 @@
         <div class="chat-shell">
           <div class="chat-topbar">
             <div class="status"><span></span> LYF BOT / LOCAL</div>
-            <div>V2.1</div>
+            <div>V4.0</div>
           </div>
           <div class="chat-messages" id="chatMessages" aria-live="polite">
             <div class="message bot">
@@ -286,7 +294,7 @@
 
   <footer>
     <p>MADE WITH CURIOSITY / PACKED LIKE A BENTO</p>
-    <p>李雨霏的个人主页 · V2.1</p>
+    <p>李雨霏的个人主页 · V4.0</p>
   </footer>
 
   <script src="script.js"></script>

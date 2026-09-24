@@ -130,7 +130,12 @@ h1 span { color: var(--cream); -webkit-text-stroke: 2px var(--ink); text-shadow:
 .hometown-cell { grid-column: span 4; min-height: 280px; background: var(--ink); color: white; display: flex; flex-direction: column; justify-content: space-between; }
 .big-type { font: 900 clamp(3.8rem, 7vw, 6.5rem)/1 Arial Black, "Microsoft YaHei UI", sans-serif; color: var(--aqua); letter-spacing: -.08em; }
 .hometown-cell p { font: 800 .67rem/1.5 Consolas, monospace; }
-.route-line { position: absolute; width: 90px; height: 90px; right: 24px; bottom: 24px; border: 2px dashed var(--pink); border-radius: 50%; }
+.ferris-wheel { position: absolute; width: 112px; height: 112px; right: 18px; bottom: 16px; color: var(--pink); filter: drop-shadow(0 0 7px rgba(255,119,183,.35)); }
+.ferris-wheel svg { width: 100%; height: 100%; overflow: visible; }
+.wheel-rim, .wheel-spokes, .wheel-stand { fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.wheel-rim { stroke-dasharray: 4 3; }
+.wheel-hub, .wheel-cabins { fill: var(--aqua); stroke: currentColor; stroke-width: 2; }
+.wheel-cabins { stroke-linejoin: round; }
 .hobby-cell { grid-column: span 5; grid-row: span 2; min-height: 420px; background: #dcd1ff; }
 .hobby-cell ul { margin: 24px 0 0; padding: 0; list-style: none; }
 .hobby-cell li { display: flex; gap: 15px; align-items: center; padding: 13px 0; border-bottom: 1px solid rgba(21,19,24,.35); font-size: clamp(1rem, 2vw, 1.35rem); font-weight: 900; }
@@ -461,4 +466,40 @@ h1 span { color: var(--aqua); -webkit-text-stroke: 2px var(--ink); text-shadow: 
 }
 @media (prefers-reduced-motion: reduce) {
   .feedback-radar b { animation: none; }
+}
+
+/* V4 mobile polish */
+@media (max-width: 680px) {
+  .site-header { min-height: 52px; gap: 6px; padding: 6px 8px 6px 12px; }
+  .logo span { font-size: 1.08rem; letter-spacing: -.04em; }
+  nav a { padding: 8px 6px; font-size: .68rem; }
+  .page-shell { margin-top: 14px; }
+  .hero-bento { min-height: 0; gap: 10px; }
+  .hero-copy { min-height: 520px; padding: 72px 20px 76px; justify-content: center; }
+  .kicker { max-width: calc(100% - 50px); font-size: .58rem; line-height: 1.45; }
+  h1 { margin: 24px 0 20px; font-size: clamp(3.3rem, 17vw, 4.5rem); line-height: .94; letter-spacing: -.035em; }
+  h1 span { display: inline-block; white-space: nowrap; letter-spacing: .01em; -webkit-text-stroke: 1px var(--ink); text-shadow: 3px 3px 0 #fff36e, 5px 5px 0 var(--ink); }
+  .hero-note { max-width: 100%; font-size: .98rem; line-height: 1.65; }
+  .hero-actions { gap: 9px; margin-top: 26px; }
+  .pill { min-height: 44px; padding: 0 15px; font-size: .82rem; }
+  .scribble { right: 18px; top: 18px; font-size: 3rem; }
+  .micro-copy { right: 16px; bottom: 16px; font-size: .54rem; }
+  .portrait-cell { min-height: 300px; }
+  .status-cell { min-height: 220px; }
+  .section { padding-top: 68px; }
+  .section-title { margin-bottom: 28px; }
+  .section-title h2 { font-size: clamp(2.35rem, 12vw, 3.5rem); line-height: .98; }
+  .about-bento, .growth-bento { gap: 10px; }
+  .about-bento .bento-cell, .growth-bento .bento-cell { padding: 22px 20px; }
+  .study-cell, .personality-cell, .hobby-cell { min-height: 340px !important; }
+  .chat-deco strong { font-size: 3.6rem; }
+}
+
+@media (max-width: 380px) {
+  nav a { padding-inline: 5px; font-size: .64rem; }
+  .hero-copy { min-height: 500px; padding-inline: 17px; }
+  h1 { font-size: clamp(3rem, 16.5vw, 3.8rem); }
+  h1 span { letter-spacing: .015em; text-shadow: 2px 2px 0 #fff36e, 4px 4px 0 var(--ink); }
+  .hero-actions { display: grid; grid-template-columns: 1fr; }
+  .pill { justify-content: center; }
 }
