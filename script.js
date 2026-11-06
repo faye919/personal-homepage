@@ -1,75 +1,16 @@
 const chatForm = document.querySelector('#chatForm');
 const chatInput = document.querySelector('#chatInput');
 const chatMessages = document.querySelector('#chatMessages');
+const chatSubmit = document.querySelector('#chatSubmit');
 const quickQuestions = document.querySelectorAll('[data-question]');
 const trailLayer = document.querySelector('#trailLayer');
 
-const knowledge = [
-  {
-    keywords: ['明星', '偶像', '刘雨昕', '追星', '演唱会'],
-    answer: '我喜欢追星，也喜欢去演唱会感受现场。我最喜欢的明星是刘雨昕。'
-  },
-  {
-    keywords: ['哪里人', '家乡', '天津'],
-    answer: '我是天津人！现在是天津大学—香港理工大学深圳未来技术学院的大一新生。'
-  },
-  {
-    keywords: ['深圳', '什么时候来', '来到深圳'],
-    answer: '我在 2026 年 8 月第一次来到深圳，从天津来到这里开启大学生活。此前我从未来过深圳，所以一切都很新鲜。'
-  },
-  {
-    keywords: ['熬夜', '早睡'],
-    answer: '喜欢熬夜，不过作为正在适应大学生活的新生，也要努力调整作息。'
-  },
-  {
-    keywords: ['志愿', '志愿服务', '组织能力', '集体'],
-    answer: '我现在在年级志愿服务组，还处于熟悉团队和工作方式的阶段。我喜欢做志愿，是因为帮助别人会让我觉得很有意义，也希望在参与中锻炼组织能力、更加融入集体。'
-  },
-  {
-    keywords: ['滑雪', '单板', '双板', '夜场'],
-    answer: '单板和双板我都会，不过更喜欢单板。之前滑过夜场，氛围和体验都特别有意思！'
-  },
-  {
-    keywords: ['钢琴', '几级'],
-    answer: '我从 5 岁开始学钢琴，现在是钢琴九级。'
-  },
-  {
-    keywords: ['游戏', '王者', '蛋仔'],
-    answer: '我喜欢玩王者荣耀和蛋仔派对。'
-  },
-  {
-    keywords: ['看剧', '悬疑', '泰剧'],
-    answer: '我很喜欢看悬疑剧，最近也对泰剧很感兴趣。'
-  },
-  {
-    keywords: ['目标', '四级', '本学期'],
-    answer: '我本学期最明确的目标是通过大学英语四级，同时希望更好地融入大学集体、培养组织能力，并继续探索智能医学工程和脑机接口方向。'
-  },
-  {
-    keywords: ['专业', '学习', '脑机', '医学', '方向'],
-    answer: '我现在主要学习智能医学工程，并关注脑机接口方向。这是我正在探索的新领域。'
-  },
-  {
-    keywords: ['最近', '大学', '生活', '英文', '适应'],
-    answer: '我最近在适应中外合办项目的英文教学模式，也很关心自己多久能适应大学生活。'
-  },
-  {
-    keywords: ['兴趣', '喜欢什么', '爱好'],
-    answer: '我的兴趣有滑雪、打游戏、追星、看剧和弹钢琴。单板滑雪、悬疑剧和演唱会现场都是我很喜欢的体验。'
-  },
-  {
-    keywords: ['性格', '内向', '慢热', '好奇'],
-    answer: '我是一个内向慢热、但对新鲜事物保持好奇的人。我会按自己的节奏了解新环境，也希望通过实际行动慢慢融入集体。'
-  },
-  {
-    keywords: ['年龄', '出生', '几岁'],
-    answer: '我出生于 2007 年，现在正处在刚刚开启大学生活的阶段。'
-  },
-  {
-    keywords: ['你好', '嗨', 'hello', 'hi'],
-    answer: '你好呀，很高兴认识你！你可以问问我的志愿服务、兴趣、本学期目标、家乡、专业或大学生活。'
-  }
-];
+// 数字分身配置
+// 云函数 URL 已填入，聊天请求会转发给 DeepSeek（Key 保存在云函数环境变量里，不外泄）。
+const CHAT_API_URL = 'https://1526747307-2ny6simneh.ap-guangzhou.tencentscf.com';
+
+// 多轮对话上下文（最多保留最近 10 条，用于让分身记住上文）
+let chatHistory = [];
 
 function addMessage(text, type) {
   const message = document.createElement('div');
@@ -90,18 +31,52 @@ function addMessage(text, type) {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-function findAnswer(question) {
-  const normalized = question.trim().toLowerCase();
-  const match = knowledge.find(item => item.keywords.some(keyword => normalized.includes(keyword.toLowerCase())));
-  return match?.answer || '这个问题还不在我的本地资料库里。你可以问我关于家乡、偶像、兴趣、专业或大学生活的问题。';
+function setChatBusy(busy) {
+  if (!chatSubmit) return;
+  chatSubmit.disabled = busy;
+  chatSubmit.textContent = busy ? '思考中…' : '发送 ↗';
 }
 
-function ask(question) {
+async function ask(question) {
   const cleanQuestion = question.trim();
   if (!cleanQuestion) return;
   addMessage(cleanQuestion, 'user');
   chatInput.value = '';
-  window.setTimeout(() => addMessage(findAnswer(cleanQuestion), 'bot'), 260);
+
+  if (!CHAT_API_URL) {
+    addMessage('数字分身还没有连接 AI 服务。等云函数部署后，在 script.js 里填入 CHAT_API_URL 就能用了。', 'bot');
+    return;
+  }
+
+  setChatBusy(true);
+  try {
+    const response = await fetch(CHAT_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: cleanQuestion,
+        history: chatHistory.slice(-10)
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (!data.reply || typeof data.reply !== 'string') {
+      throw new Error('empty reply');
+    }
+
+    chatHistory.push({ role: 'user', content: cleanQuestion });
+    chatHistory.push({ role: 'assistant', content: data.reply });
+    addMessage(data.reply, 'bot');
+  } catch (error) {
+    console.error('Chat failed:', error);
+    addMessage('分身暂时联系不上模型服务，请稍后再试。', 'bot');
+  } finally {
+    setChatBusy(false);
+  }
 }
 
 chatForm.addEventListener('submit', event => {
